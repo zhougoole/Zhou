@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FITTING | 暗夜淬炼</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        zinc: {
+                            950: '#09090b',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: black;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Utility for outline text */
+        .text-stroke {
+            -webkit-text-stroke: 1px white;
+            color: transparent;
+        }
+        .text-stroke-black {
+            -webkit-text-stroke: 1px black;
+            color: transparent;
+        }
+        
+        /* Animation Classes */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-1 { transition-delay: 100ms; }
+        .stagger-2 { transition-delay: 200ms; }
+        .stagger-3 { transition-delay: 300ms; }
+        .stagger-4 { transition-delay: 400ms; }
+
+        /* Smooth reveal for hero title */
+        .hero-title-fill {
+            width: 0%;
+            transition: width 1.5s ease-in-out;
+        }
+        .loaded .hero-title-fill {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-6">
+        <div class="container mx-auto px-6 flex items-center justify-between">
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn" class="lg:hidden text-white hover:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+
+            <!-- Logo -->
+            <div class="flex-shrink-0">
+                <a href="#" class="flex items-center gap-3 group">
+                    <!-- Geometric Logo SVG -->
+                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-10 w-auto">
+                        <path d="M20 5 L45 5 L35 75 L10 75 Z" fill="white" class="group-hover:fill-gray-200 transition-colors"/>
+                        <path d="M50 5 L80 5 L65 30 L46 30 Z" fill="white" class="group-hover:fill-gray-200 transition-colors"/>
+                        <path d="M40 40 L65 40 L55 60 L37 60 Z" fill="white" class="group-hover:fill-gray-200 transition-colors"/>
+                    </svg>
+                    <div class="flex flex-col justify-center">
+                        <span class="text-2xl font-black tracking-tighter uppercase leading-none text-white">fitting</span>
+                        <span class="text-[0.6rem] font-bold tracking-[0.4em] uppercase opacity-60 leading-none mt-1 ml-0.5 text-white">Sport</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Desktop Links -->
+            <div class="hidden lg:flex items-center gap-10">
+                <a href="#" class="group flex flex-col items-center">
+                    <span class="text-base font-bold text-white tracking-widest">男士</span>
+                    <span class="text-[10px] font-medium text-zinc-500 group-hover:text-zinc-300 transition-all opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 duration-300">MEN</span>
+                </a>
+                <a href="#" class="group flex flex-col items-center">
+                    <span class="text-base font-bold text-white tracking-widest">女士</span>
+                    <span class="text-[10px] font-medium text-zinc-500 group-hover:text-zinc-300 transition-all opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 duration-300">WOMEN</span>
+                </a>
+                <a href="#" class="group flex flex-col items-center">
+                    <span class="text-base font-bold text-white tracking-widest">儿童</span>
+                    <span class="text-[10px] font-medium text-zinc-500 group-hover:text-zinc-300 transition-all opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 duration-300">KIDS</span>
+                </a>
+                <a href="#" class="group flex flex-col items-center">
+                    <span class="text-base font-bold text-white tracking-widest">装备</span>
+                    <span class="text-[10px] font-medium text-zinc-500 group-hover:text-zinc-300 transition-all opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0 duration-300">GEAR</span>
+                </a>
+            </div>
+
+            <!-- Icons -->
+            <div class="flex items-center gap-6 text-white">
+                <button class="hover:text-zinc-300 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </button>
+                <button class="hidden sm:block hover:text-zinc-300 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </button>
+                <button class="relative hover:text-zinc-300 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <span class="absolute -top-1 -right-1 bg-white text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] bg-black transform -translate-x-full transition-transform duration-300 flex flex-col p-6">
+        <div class="flex items-center justify-between mb-12">
+            <span class="text-2xl font-black text-white uppercase">fitting</span>
+            <button id="close-menu-btn" class="text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+        <div class="flex flex-col gap-8 pl-4">
+            <a href="#" class="text-3xl font-bold text-white hover:text-zinc-300">男士 <span class="text-sm font-normal text-zinc-500 ml-2">MEN</span></a>
+            <a href="#" class="text-3xl font-bold text-white hover:text-zinc-300">女士 <span class="text-sm font-normal text-zinc-500 ml-2">WOMEN</span></a>
+            <a href="#" class="text-3xl font-bold text-white hover:text-zinc-300">儿童 <span class="text-sm font-normal text-zinc-500 ml-2">KIDS</span></a>
+            <a href="#" class="text-3xl font-bold text-white hover:text-zinc-300">装备 <span class="text-sm font-normal text-zinc-500 ml-2">GEAR</span></a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen w-full overflow-hidden bg-black flex items-end pb-24 lg:pb-32">
+        <!-- Background -->
+        <div class="absolute inset-0 z-0">
+             <img
+                src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2940&auto=format&fit=crop"
+                alt="Hero"
+                class="h-full w-full object-cover opacity-60 transition-transform duration-[3s] hover:scale-105 transform scale-110 animate-zoomOut"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+        </div>
+
+        <div class="relative z-10 container mx-auto px-6">
+            <div class="max-w-4xl reveal-on-scroll visible">
+                <!-- Tagline -->
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="h-[2px] w-12 bg-white"></div>
+                    <span class="text-white text-sm md:text-base font-black tracking-[0.4em] uppercase">New Collection 2025</span>
+                </div>
+
+                <!-- Title -->
+                <div class="relative mb-10">
+                    <h1 class="text-7xl md:text-9xl font-black tracking-tighter uppercase leading-[0.9] text-white">
+                        <div class="flex flex-col md:flex-row md:items-baseline gap-2 md:gap-8">
+                            <span>暗夜</span>
+                            <!-- Animated Fill Text -->
+                            <span class="relative inline-block">
+                                <span class="absolute inset-0 overflow-hidden text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-400 to-zinc-600 z-10 whitespace-nowrap hero-title-fill">
+                                    淬炼
+                                </span>
+                                <span class="text-transparent z-0 text-stroke">
+                                    淬炼
+                                </span>
+                            </span>
+                        </div>
+                    </h1>
+                </div>
+
+                <p class="text-zinc-300 text-lg md:text-xl max-w-xl mb-12 leading-relaxed font-light border-l-2 border-zinc-800 pl-6">
+                    以黑暗为炉，以汗水为火。全新的黑曜石系列将精密空气动力学与极致轻量化融合，在极限中寻找突破。
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-5">
+                    <button class="bg-white text-black px-10 py-5 text-lg font-bold uppercase tracking-wider hover:bg-zinc-200 transition-colors flex items-center justify-center">
+                        立即选购
+                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+                    <button class="border border-white text-white px-10 py-5 text-lg font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-colors backdrop-blur-sm flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 w-4 h-4 fill-current" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                        品牌影片
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Background decorative text (Parallax simulation) -->
+        <div class="absolute top-1/2 left-0 w-full text-center pointer-events-none opacity-[0.05] hidden md:block">
+             <span class="text-[200px] font-black leading-none text-white select-none">OBSIDIAN</span>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="py-24 bg-black text-white relative overflow-hidden">
+        <!-- Section Title -->
+        <div class="container mx-auto px-6 mb-16 relative z-10">
+            <div class="text-center relative">
+                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center opacity-[0.03] pointer-events-none">
+                    <span class="text-[120px] md:text-[180px] font-black leading-none whitespace-nowrap">CATEGORIES</span>
+                </div>
+                
+                <div class="flex items-center justify-center gap-3 mb-4">
+                    <span class="h-[1px] w-8 bg-zinc-500"></span>
+                    <span class="text-sm font-bold tracking-[0.3em] uppercase text-zinc-400">Gear Up Performance</span>
+                    <span class="h-[1px] w-8 bg-zinc-500"></span>
+                </div>
+                <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none reveal-on-scroll">
+                    <span>全套</span>
+                    <span class="inline-block w-4"></span>
+                    <span class="text-stroke transition-all duration-700 hover:text-white/10">装备</span>
+                </h2>
+            </div>
+            
+            <div class="flex justify-end mt-8">
+                <a href="#" class="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-colors flex items-center">
+                    View All <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 w-4 h-4" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Item 1 -->
+            <div class="group relative h-[600px] overflow-hidden rounded-sm cursor-pointer reveal-on-scroll stagger-1">
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2940&auto=format&fit=crop" class="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-80 group-hover:opacity-100">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                <div class="absolute inset-0 p-8 flex flex-col justify-between z-10">
+                    <span class="text-4xl font-black text-stroke group-hover:text-white transition-colors duration-500">01</span>
+                    <div>
+                        <span class="text-[10px] tracking-[0.4em] text-zinc-400 mb-2 block">RUNNING</span>
+                        <h3 class="text-2xl font-bold uppercase mb-2 group-hover:translate-x-2 transition-transform duration-500">疾速奔跑</h3>
+                        <div class="h-[1px] w-12 group-hover:w-full bg-white transition-all duration-500 mb-4 opacity-50"></div>
+                        <p class="text-zinc-400 text-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">超越极限的速度与耐力</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Item 2 -->
+            <div class="group relative h-[600px] overflow-hidden rounded-sm cursor-pointer reveal-on-scroll stagger-2">
+                <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?q=80&w=2940&auto=format&fit=crop" class="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-80 group-hover:opacity-100">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                <div class="absolute inset-0 p-8 flex flex-col justify-between z-10">
+                    <span class="text-4xl font-black text-stroke group-hover:text-white transition-colors duration-500">02</span>
+                    <div>
+                        <span class="text-[10px] tracking-[0.4em] text-zinc-400 mb-2 block">TRAINING</span>
+                        <h3 class="text-2xl font-bold uppercase mb-2 group-hover:translate-x-2 transition-transform duration-500">力量训练</h3>
+                        <div class="h-[1px] w-12 group-hover:w-full bg-white transition-all duration-500 mb-4 opacity-50"></div>
+                        <p class="text-zinc-400 text-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">铸就钢铁般的意志</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Item 3 -->
+            <div class="group relative h-[600px] overflow-hidden rounded-sm cursor-pointer reveal-on-scroll stagger-3">
+                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2840&auto=format&fit=crop" class="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-80 group-hover:opacity-100">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                <div class="absolute inset-0 p-8 flex flex-col justify-between z-10">
+                    <span class="text-4xl font-black text-stroke group-hover:text-white transition-colors duration-500">03</span>
+                    <div>
+                        <span class="text-[10px] tracking-[0.4em] text-zinc-400 mb-2 block">LIFESTYLE</span>
+                        <h3 class="text-2xl font-bold uppercase mb-2 group-hover:translate-x-2 transition-transform duration-500">都市生活</h3>
+                        <div class="h-[1px] w-12 group-hover:w-full bg-white transition-all duration-500 mb-4 opacity-50"></div>
+                        <p class="text-zinc-400 text-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">全天候的舒适体验</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Section -->
+    <section class="py-24 bg-zinc-950 border-t border-zinc-900 overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <!-- Title -->
+            <div class="text-center relative mb-16">
+                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center opacity-[0.03] pointer-events-none">
+                    <span class="text-[120px] md:text-[180px] font-black leading-none whitespace-nowrap">TRENDING</span>
+                </div>
+                <div class="flex items-center justify-center gap-3 mb-4">
+                    <span class="h-[1px] w-8 bg-zinc-500"></span>
+                    <span class="text-sm font-bold tracking-[0.3em] uppercase text-zinc-400">Latest Collection</span>
+                    <span class="h-[1px] w-8 bg-zinc-500"></span>
+                </div>
+                <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none reveal-on-scroll">
+                    <span>当季</span>
+                    <span class="inline-block w-4"></span>
+                    <span class="text-stroke transition-all duration-700 hover:text-white/10">热推</span>
+                </h2>
+            </div>
+
+            <!-- Products -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-16">
+                <!-- Product 1 -->
+                <div class="group cursor-pointer reveal-on-scroll stagger-1">
+                    <div class="relative aspect-[3/4] overflow-hidden bg-zinc-900 mb-6 rounded-sm">
+                        <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=2864&auto=format&fit=crop" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <span class="absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 uppercase tracking-wider">NEW</span>
+                        <button class="absolute bottom-4 right-4 h-12 w-12 bg-white flex items-center justify-center text-black translate-y-20 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 shadow-xl z-20 hover:bg-zinc-200">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        </button>
+                    </div>
+                    <div class="space-y-1 pl-2 border-l-2 border-transparent group-hover:border-white transition-colors duration-300">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-white text-lg font-bold uppercase">幻影跑鞋 V2</h3>
+                            <p class="text-white font-bold">¥1,299</p>
+                        </div>
+                        <p class="text-zinc-500 text-xs font-mono uppercase">Phantom Runner V2</p>
+                        <p class="text-zinc-400 text-sm">男士跑步</p>
+                    </div>
+                </div>
+                <!-- Product 2 -->
+                <div class="group cursor-pointer reveal-on-scroll stagger-2">
+                    <div class="relative aspect-[3/4] overflow-hidden bg-zinc-900 mb-6 rounded-sm">
+                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=2960&auto=format&fit=crop" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <button class="absolute bottom-4 right-4 h-12 w-12 bg-white flex items-center justify-center text-black translate-y-20 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 shadow-xl z-20 hover:bg-zinc-200">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        </button>
+                    </div>
+                    <div class="space-y-1 pl-2 border-l-2 border-transparent group-hover:border-white transition-colors duration-300">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-white text-lg font-bold uppercase">核心科技T恤</h3>
+                            <p class="text-white font-bold">¥399</p>
+                        </div>
+                        <p class="text-zinc-500 text-xs font-mono uppercase">Core Tech Tee</p>
+                        <p class="text-zinc-400 text-sm">男士训练</p>
+                    </div>
+                </div>
+                 <!-- Product 3 -->
+                 <div class="group cursor-pointer reveal-on-scroll stagger-3">
+                    <div class="relative aspect-[3/4] overflow-hidden bg-zinc-900 mb-6 rounded-sm">
+                        <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=2599&auto=format&fit=crop" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <span class="absolute top-4 left-4 bg-white text-black text-[10px] font-bold px-3 py-1 uppercase tracking-wider">HOT</span>
+                        <button class="absolute bottom-4 right-4 h-12 w-12 bg-white flex items-center justify-center text-black translate-y-20 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 shadow-xl z-20 hover:bg-zinc-200">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        </button>
+                    </div>
+                    <div class="space-y-1 pl-2 border-l-2 border-transparent group-hover:border-white transition-colors duration-300">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-white text-lg font-bold uppercase">隐形紧身裤</h3>
+                            <p class="text-white font-bold">¥699</p>
+                        </div>
+                        <p class="text-zinc-500 text-xs font-mono uppercase">Stealth Leggings</p>
+                        <p class="text-zinc-400 text-sm">女士训练</p>
+                    </div>
+                </div>
+                 <!-- Product 4 -->
+                 <div class="group cursor-pointer reveal-on-scroll stagger-4">
+                    <div class="relative aspect-[3/4] overflow-hidden bg-zinc-900 mb-6 rounded-sm">
+                        <img src="https://images.unsplash.com/photo-1559563458-52c69f83555a?q=80&w=2865&auto=format&fit=crop" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <button class="absolute bottom-4 right-4 h-12 w-12 bg-white flex items-center justify-center text-black translate-y-20 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 shadow-xl z-20 hover:bg-zinc-200">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        </button>
+                    </div>
+                    <div class="space-y-1 pl-2 border-l-2 border-transparent group-hover:border-white transition-colors duration-300">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-white text-lg font-bold uppercase">空气力学外套</h3>
+                            <p class="text-white font-bold">¥1,499</p>
+                        </div>
+                        <p class="text-zinc-500 text-xs font-mono uppercase">Aero Jacket</p>
+                        <p class="text-zinc-400 text-sm">户外系列</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-20 text-center">
+                <button class="border border-zinc-700 text-white px-16 py-6 text-sm font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-colors">
+                    浏览全部商品 / Shop All
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="relative py-32 bg-black overflow-hidden">
+        <div class="absolute inset-0 opacity-20 pointer-events-none">
+            <img src="https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?q=80&w=2938&auto=format&fit=crop" class="h-full w-full object-cover grayscale">
+        </div>
+        <div class="relative z-10 container mx-auto px-6 text-center">
+            <!-- Title -->
+            <div class="relative mb-16">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center opacity-[0.03] pointer-events-none">
+                   <span class="text-[120px] md:text-[180px] font-black leading-none whitespace-nowrap">PHILOSOPHY</span>
+               </div>
+               <div class="flex items-center justify-center gap-3 mb-4">
+                   <span class="h-[1px] w-8 bg-zinc-500"></span>
+                   <span class="text-sm font-bold tracking-[0.3em] uppercase text-zinc-400">Precision in Every Movement</span>
+                   <span class="h-[1px] w-8 bg-zinc-500"></span>
+               </div>
+               <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none reveal-on-scroll">
+                   <span>精准</span>
+                   <span class="inline-block w-4"></span>
+                   <span class="text-stroke transition-all duration-700 hover:text-white/10">律动</span>
+               </h2>
+           </div>
+
+            <p class="text-zinc-300 text-lg md:text-2xl max-w-3xl mx-auto mb-16 leading-relaxed font-light reveal-on-scroll stagger-1">
+                在 <span class="text-white font-black underline underline-offset-4 decoration-zinc-700">fitting</span>，我们相信最完美的装备是隐形的。它随你而动，随你呼吸，并适应你的每一次爆发。
+            </p>
+            
+            <button class="bg-white text-black px-12 py-7 text-lg font-bold uppercase tracking-widest hover:bg-zinc-200 transition-colors reveal-on-scroll stagger-2">
+                探索科技 / Explore Tech
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white pt-24 pb-12 border-t border-zinc-900">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+                <div>
+                     <!-- Logo -->
+                     <a href="#" class="flex items-center gap-3 mb-8">
+                        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-12 w-auto">
+                            <path d="M20 5 L45 5 L35 75 L10 75 Z" fill="white"/>
+                            <path d="M50 5 L80 5 L65 30 L46 30 Z" fill="white"/>
+                            <path d="M40 40 L65 40 L55 60 L37 60 Z" fill="white"/>
+                        </svg>
+                        <div class="flex flex-col justify-center">
+                            <span class="text-2xl font-black tracking-tighter uppercase leading-none">fitting</span>
+                            <span class="text-[0.6rem] font-bold tracking-[0.4em] uppercase opacity-60 leading-none mt-1 ml-0.5">Sport</span>
+                        </div>
+                    </a>
+                    <p class="text-zinc-500 mb-8 max-w-xs leading-relaxed text-sm">
+                        专为现代运动员打造的高端运动服饰。每一个针脚都蕴含着精准、性能与风格。
+                        <br />
+                        <span class="block mt-4 text-xs font-mono text-zinc-600 uppercase">Designed in Shanghai</span>
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-400 hover:bg-white hover:text-black transition-all">FB</a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-400 hover:bg-white hover:text-black transition-all">IG</a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-400 hover:bg-white hover:text-black transition-all">TW</a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold uppercase mb-6 tracking-wider flex items-center gap-2">购物 <span class="text-xs text-zinc-600 font-normal">SHOP</span></h4>
+                    <ul class="space-y-4 text-zinc-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">男士 / Men</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">女士 / Women</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">儿童 / Kids</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">装备 / Accessories</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold uppercase mb-6 tracking-wider flex items-center gap-2">客户服务 <span class="text-xs text-zinc-600 font-normal">SUPPORT</span></h4>
+                    <ul class="space-y-4 text-zinc-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">订单状态</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">配送政策</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">退换货服务</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold uppercase mb-6 tracking-wider flex items-center gap-2">订阅 <span class="text-xs text-zinc-600 font-normal">NEWSLETTER</span></h4>
+                    <p class="text-zinc-500 mb-6 text-sm">订阅以获取独家优惠、新品首发及会员专属福利。</p>
+                    <form class="flex flex-col gap-3">
+                        <input type="email" placeholder="请输入您的邮箱" class="w-full bg-zinc-900 border border-zinc-800 text-white px-6 py-3 focus:outline-none focus:border-white transition-colors placeholder:text-zinc-600 text-sm">
+                        <button class="bg-white text-black font-bold uppercase py-3 hover:bg-zinc-200 transition-colors tracking-widest text-sm">订阅 / Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="border-t border-zinc-900 pt-8 flex flex-col md:flex-row justify-between items-center text-zinc-600 text-xs">
+                <p>© 2025 Fitting Sports. All rights reserved.</p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-zinc-400">隐私政策</a>
+                    <a href="#" class="hover:text-zinc-400">服务条款</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+            
+            // Intersection Observer for animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+
+            // Navbar Scroll Effect
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('bg-black/90', 'backdrop-blur-md', 'shadow-lg');
+                    navbar.classList.remove('py-6');
+                    navbar.classList.add('py-4');
+                } else {
+                    navbar.classList.remove('bg-black/90', 'backdrop-blur-md', 'shadow-lg', 'py-4');
+                    navbar.classList.add('py-6');
+                }
+            });
+
+            // Mobile Menu
+            const menuBtn = document.getElementById('menu-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('-translate-x-full');
+            });
+
+            closeMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.add('-translate-x-full');
+            });
+        });
+    </script>
+</body>
+</html>
